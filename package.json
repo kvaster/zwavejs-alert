@@ -1,0 +1,15 @@
+{
+  "name": "zwavejs-alert",
+  "version": "0.0.1",
+  "description": "zwavejs2mqtt plugin for simple alerting",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vktor Kuzmin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kvaster/zwavejs-alert.git"
+  },
+  "license": "ISC"
+}
