@@ -70,7 +70,7 @@ class ZwavejsAlert {
     }
 
     onValueChanged(value) {
-        this.logger.info(`value updated: ${JSON.stringify(value)}`)
+        //this.logger.info(`value updated: ${JSON.stringify(value)}`)
 
         const n = this.getNode(value.nodeId)
         const zn = this.zwave.nodes.get(value.nodeId)
