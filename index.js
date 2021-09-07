@@ -51,7 +51,7 @@ class ZwavejsAlert {
         const n = this.getNode(node.id)
         const newStatus = node.status.toString()
 
-        this.logger.info(`Node status: ${n.status} -> ${newStatus}`)
+        this.logger.info(`Node ${node.id} (${node.name} - ${node.loc}) status: ${n.status} -> ${newStatus}`)
 
         if (n.status !== newStatus) {
             if (newStatus === 'Dead' || n.status === 'Dead') {
