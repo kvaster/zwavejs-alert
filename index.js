@@ -81,7 +81,7 @@ class ZwavejsAlert {
                     case 'isLow': {
                         const v = getOrDefault(n.values, value.id, () => ({isLow: false}))
                         if (value.value !== v.isLow) {
-                            this.sendValueMsg(value, zn, isLow ? '*Battery IS LOW!*' : '*Battery is not low*')
+                            this.sendValueMsg(value, zn, v.isLow ? '*Battery IS LOW!*' : '*Battery is not low*')
                         }
                         break
                     }
