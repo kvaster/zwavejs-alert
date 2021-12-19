@@ -34,6 +34,8 @@ class ZwavejsAlert {
         this.zwave.on('nodeRemoved', this.onNodeRemoved.bind(this))
         this.zwave.on('nodeStatus', this.onNodeStatus.bind(this))
 
+        this.alerts = {}
+
         this.sendMsg('ℹ *ZWave:* alert system started')
     }
 
@@ -116,7 +118,27 @@ class ZwavejsAlert {
                     const v = getOrDefault(n.values, value.id, () => ({}))
 
                     if (isDefined(v.state) || state !== 'idle') {
-                        this.sendValueMsg(value, zn, `*Alert:* ${state}`, 'w')
+                        let k = `${zn.name}-${zn.loc}-${v.commandClassName}-${v.endpoint}-${v.propertyName}`
+                        if (isDefined(v.propertyKeyName)) {
+                            k = `${k}-${v.propertyKeyName}`
+                        }
+                        let a = this.alerts[k]
+                        if (isDefined(a)) {
+                            if (a.state !== state) {
+                                clearTimeout(a.timeout)
+                                a = null
+                            }
+                        }
+
+                        if (!isDefined(a)) {
+                            this.sendValueMsg(value, zn, `*Alert:* ${state}`, 'w')
+                            this.alerts[k] = {
+                                state: state,
+                                timeout: setTimeout(() => {
+                                    delete this.alerts[k]
+                                }, 30 * 60 * 1000)
+                            }
+                        }
                     }
 
                     v.state = state
