@@ -34,13 +34,13 @@ class ZwavejsAlert {
         this.zwave.on('nodeRemoved', this.onNodeRemoved.bind(this))
         this.zwave.on('nodeStatus', this.onNodeStatus.bind(this))
 
-        this.sendMsg('*ZWave:* alert system started')
+        this.sendMsg('ℹ *ZWave:* alert system started')
     }
 
     async destroy() {
         this.logger.info('Stopping ZwaveJS alert plugin')
 
-        this.sendMsg('*ZWave:* alert system stopped')
+        this.sendMsg('ℹ *ZWave:* alert system stopped')
     }
 
     onNodeRemoved(node) {
@@ -55,7 +55,8 @@ class ZwavejsAlert {
 
         if (n.status !== newStatus) {
             if (newStatus === 'Dead' || n.status === 'Dead') {
-                this.sendMsg(`*ZWave:* ${node.name} - ${node.loc}\nStatus: ${n.status} -> *${newStatus}*`)
+                let p = newStatus === 'Dead' ? '🚨' : 'ℹ'
+                this.sendMsg(`${p} *ZWave:* ${node.name} - ${node.loc}\nStatus: ${n.status} -> *${newStatus}*`)
             }
         }
 
@@ -81,14 +82,14 @@ class ZwavejsAlert {
                     case 'isLow': {
                         const v = getOrDefault(n.values, value.id, () => ({isLow: false}))
                         if (value.value !== v.isLow) {
-                            this.sendValueMsg(value, zn, v.isLow ? '*Battery IS LOW!*' : '*Battery is not low*')
+                            this.sendValueMsg(value, zn, v.isLow ? '*Battery IS LOW!*' : '*Battery is not low*', 'e')
                         }
                         break
                     }
                     case 'level': {
                         const v = getOrDefault(n.values, value.id, () => ({}))
                         if (value.value <= 30 || (isDefined(v.level) && v.level !== value.value)) {
-                            this.sendValueMsg(value, zn, `*Battery level is:* ${value.value}%`)
+                            this.sendValueMsg(value, zn, `*Battery level is:* ${value.value}%`, value.value <= 30 ? 'w' : 'i')
                         }
                         v.level = value.value
                         break
@@ -115,7 +116,7 @@ class ZwavejsAlert {
                     const v = getOrDefault(n.values, value.id, () => ({}))
 
                     if (isDefined(v.state) || state !== 'idle') {
-                        this.sendValueMsg(value, zn, `*Alert:* ${state}`)
+                        this.sendValueMsg(value, zn, `*Alert:* ${state}`, 'w')
                     }
 
                     v.state = state
@@ -124,8 +125,9 @@ class ZwavejsAlert {
         }
     }
 
-    sendValueMsg(v, n, msg) {
-        let m = `*ZWave:* ${n.name} - ${n.loc}\nClass: ${v.commandClassName}\nEndpoint: ${v.endpoint}\nProperty: ${v.propertyName}`
+    sendValueMsg(v, n, msg, s) {
+        let p = s === 'i' ? 'ℹ️' : (s === 'w' ? '⚠️' : '🚨')
+        let m = `${p} *ZWave:* ${n.name} - ${n.loc}\nClass: ${v.commandClassName}\nEndpoint: ${v.endpoint}\nProperty: ${v.propertyName}`
         if (isDefined(v.propertyKeyName)) {
             m = `${m}\nPropertyKey: ${v.propertyKeyName}`
         }
