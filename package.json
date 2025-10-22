@@ -1,5 +1,5 @@
 {
-  "name": "zwavejs-alert",
+  "name": "@kvaster/zwavejs-alert",
   "version": "0.0.2",
   "type": "module",
   "description": "zwavejs2mqtt plugin for simple alerting",
