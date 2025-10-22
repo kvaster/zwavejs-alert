@@ -1,6 +1,7 @@
 // Simple zwavejs2mqtt plugin for alerting
 
-https = require('https')
+import https from 'https';
+import config from './config.js'
 
 function isDefined(a) {
     return a !== undefined && a !== null
@@ -16,15 +17,15 @@ function getOrDefault(dict, id, func) {
     return v
 }
 
-class ZwavejsAlert {
-    constructor(ctx, cfg) {
+export default class ZwavejsAlert {
+    constructor(ctx) {
         this.zwave = ctx.zwave
         this.mqtt = ctx.mqtt
         this.logger = ctx.logger
         this.app = ctx.app
 
-        this.apiKey = cfg.apiKey
-        this.chatId = cfg.chatId
+        this.apiKey = config.apiKey
+        this.chatId = config.chatId
 
         this.logger.info('Starting ZwaveJS alert plugin')
 
@@ -181,8 +182,4 @@ class ZwavejsAlert {
 
         req.end()
     }
-}
-
-module.exports = function (ctx) {
-    return new ZwavejsAlert(ctx, require('./config.js'))
 }

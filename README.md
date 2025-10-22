@@ -3,8 +3,10 @@
 You must configure plugin before use. For this you need to create `config.js` with following info:
 
 ```
-module.exports = {
+const config = {
     apiKey: 'TELEGRAM_BOT_API_KEY',
     chatId: 'YOUR_CHAT_ID'
 }
+
+export default config;
 ```
